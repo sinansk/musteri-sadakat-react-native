@@ -1,7 +1,7 @@
 import { getCurrentDateTimeInISOString } from "./utils/getCurrentDateTimeIso";
 
-export const api = "https://willing-ants-185ca583cb.strapiapp.com/api/";
-// export const api = "http://192.168.1.32:1337/api/";
+// export const api = "https://willing-ants-185ca583cb.strapiapp.com/api/";
+export const api = "http://192.168.1.32:1337/api/";
 
 export const authApi = `${api}auth`;
 

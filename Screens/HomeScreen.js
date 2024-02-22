@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet, Button, Pressable, Image } from 're
 import { globalStyles } from '../styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { fetchLoyaltyPoints } from '../redux/userThunk';
+import { fetchLoyaltyPoints, fetchRewardRequests } from '../redux/userThunk';
 import { createRewardRequest, getLoyaltyPoints, getRewards } from '../requestMethods';
 import ModalComponent from '../Components/Modals/Modal';
 import RewardRequestModal from '../Components/Modals/RewardRequestModal';
@@ -23,6 +23,7 @@ export default HomeScreen = ({ route }) => {
 
     const [requestedReward, setRequestedReward] = useState(null);
     useEffect(() => {
+        dispatch(fetchRewardRequests(jwt))
         dispatch(fetchLoyaltyPoints(jwt))
         getRewards(jwt).then(response => response.json()).then(data => {
             setRewards(data.data);

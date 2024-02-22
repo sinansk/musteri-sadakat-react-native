@@ -1,20 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, FlatList, Pressable, Modal, Image, StyleSheet } from 'react-native';
 import { getProfile } from '../requestMethods';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ModalComponent from '../Components/Modals/Modal';
 import ConfirmationModal from '../Components/Modals/ConfirmationModal';
 import { deleteRewardRequest } from '../requestMethods';
 import { successToast } from '../toasts';
+import { fetchRewardRequests } from '../redux/userThunk';
+import { deleteRewardRequestFromRedux } from '../redux/userSlice';
 
 
 const RequestsScreen = () => {
-    const [rewardRequests, setRewardRequests] = useState([]);
+    const rewardRequests = useSelector(state => state.userSlice?.user?.rewardRequests);
     const [selectedRewardRequest, setSelectedRewardRequest] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const jwt = useSelector(state => state.userSlice?.user?.jwt);
     const [deletedRequest, setDeletedRequest] = useState(null);
     const modalRef = useRef();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchRewardRequests(jwt));
+    }, []);
+
 
     const handleDeleteButton = (id) => {
         setDeletedRequest(id);
@@ -22,25 +29,13 @@ const RequestsScreen = () => {
     }
     const handleDeleteRequest = (id) => {
         deleteRewardRequest(jwt, id).then(response => response.json()).then(data => {
-            setRewardRequests(rewardRequests.filter(request => request.id !== id));
+            dispatch(deleteRewardRequestFromRedux(id));
             successToast('Request deleted successfully');
         }).catch(error => {
             console.error('Error:', error);
         });
     }
 
-    useEffect(() => {
-        getProfile(jwt).then(response => response.json()).then(data => {
-
-            const sortedRewardRequests = data.reward_requests.sort((a, b) => {
-                return new Date(b.requestDate) - new Date(a.requestDate);
-            });
-            setRewardRequests(sortedRewardRequests);
-        }
-        ).catch(error => {
-            console.error('Error:', error);
-        });
-    }, []);
 
     const renderItem = ({ item }) => {
         return (
@@ -67,17 +62,19 @@ const RequestsScreen = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Your Reward Requests</Text>
-            {rewardRequests.length === 0 && (
+            {rewardRequests && rewardRequests.length === 0 && (
                 <>
                     <Text style={styles.info}>No reward requests</Text>
                     <Image source={require('../assets/nothing.png')} style={styles.image} />
                 </>
             )}
-            <FlatList
-                data={rewardRequests}
-                renderItem={renderItem}
-                keyExtractor={item => item.id.toString()}
-            />
+            {rewardRequests && rewardRequests.length > 0 && (
+                <FlatList
+                    data={rewardRequests}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id.toString()}
+                />
+            )}
             <ModalComponent ref={modalRef}>
                 <ConfirmationModal onConfirm={() => handleDeleteRequest(deletedRequest)} onCancel={() => modalRef.current.closeModal()} />
             </ModalComponent>

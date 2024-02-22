@@ -1,7 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { loginUser, logoutUser, registerUser, fetchLoyaltyPoints, fetchRewardRequests } from './userThunk';
 const initialState = {
-    user: null, // Kullanıcı bilgilerini burada saklayacağız
+    user: null,
+    rewardRequests: [],
+    loading: false,
+    error: null
 };
 
 const userSlice = createSlice({
@@ -14,6 +17,9 @@ const userSlice = createSlice({
         clearUser: (state) => {
             state.user = null;
         },
+        deleteRewardRequestFromRedux: (state, action) => {
+            state.user.rewardRequests = state.user.rewardRequests.filter(request => request.id !== action.payload);
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -46,7 +52,7 @@ const userSlice = createSlice({
             )
             .addCase(fetchLoyaltyPoints.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user.loyaltyPoints = action.payload.data.filter(data => data.attributes.user.data.id === state.user.user.id)[0].attributes.pointAmount;
+                state.user.loyaltyPoints = action.payload.data.filter(d => d.attributes.users.data[0].id === state.user.user.id)[0].attributes.pointAmount;
             })
             .addCase(fetchLoyaltyPoints.rejected, (state, action) => {
                 state.loading = false;
@@ -58,7 +64,7 @@ const userSlice = createSlice({
             )
             .addCase(fetchRewardRequests.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user.rewardRequests = action.payload.data;
+                state.user.rewardRequests = action.payload;
             })
             .addCase(fetchRewardRequests.rejected, (state, action) => {
                 state.loading = false;
@@ -67,6 +73,6 @@ const userSlice = createSlice({
     },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, clearUser, deleteRewardRequestFromRedux } = userSlice.actions;
 
 export default userSlice.reducer;

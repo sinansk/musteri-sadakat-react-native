@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { login, logout, register, getLoyaltyPoints, getRewardRequests } from '../requestMethods';
+import { login, logout, register, getLoyaltyPoints, getRewardRequests, getProfile } from '../requestMethods';
 
 export const loginUser = createAsyncThunk(
     'user/loginUser',
@@ -45,6 +45,7 @@ export const fetchLoyaltyPoints = createAsyncThunk(
             const response = await getLoyaltyPoints(token);
             if (response.status === 200) {
                 const loyaltyPoints = await response.json();
+                console.log(loyaltyPoints, "loyaltyPointsRedux")
                 return loyaltyPoints;
             } else {
                 return rejectWithValue(await response.json());
@@ -59,10 +60,13 @@ export const fetchRewardRequests = createAsyncThunk(
     'user/fetchRewardRequests',
     async (token, { rejectWithValue }) => {
         try {
-            const response = await getRewardRequests(token);
-            if (response.status === 200) {
-                const rewardRequests = await response.json();
-                return rewardRequests;
+            const response = await getProfile(token);
+            if (response.ok) { // response.ok durumunu kontrol edin
+                const data = await response.json();
+                const sortedRewardRequests = data.reward_requests.sort((a, b) => {
+                    return new Date(b.requestDate) - new Date(a.requestDate);
+                });
+                return sortedRewardRequests; // Eylem yükü olarak sıralanmış ödül taleplerini döndürün
             } else {
                 return rejectWithValue(await response.json());
             }
@@ -71,3 +75,5 @@ export const fetchRewardRequests = createAsyncThunk(
         }
     }
 );
+
+
