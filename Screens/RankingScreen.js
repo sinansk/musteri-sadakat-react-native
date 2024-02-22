@@ -7,11 +7,9 @@ const RankingScreen = () => {
     const [cafeList, setCafeList] = useState([]);
     const [rewardRequests, setRewardRequests] = useState([]);
     const jwt = useSelector(state => state.userSlice?.user?.jwt);
-    // Örnek: Redux ile kullanıcı bilgilerini alma
     const userId = useSelector(state => state.user?.user?.id);
 
     useEffect(() => {
-        // API'den kafeleri ve loyalty puanlarını al
         const fetchData = async () => {
             try {
                 const response = await getLoyaltyPoints(jwt);

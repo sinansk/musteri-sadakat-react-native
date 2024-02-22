@@ -1,11 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 const globalStyles = StyleSheet.create({
-    container: {
-        backgroundColor: '#18181b',
-        color: '#334155',
+    body: {
+        fontFamily: 'Roboto',
     },
-
     input: {
         width: '100%',
         height: 40,
@@ -34,13 +32,31 @@ const globalStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
-        color: '#18181b'
+        color: '#18181b',
+        width: '100%'
     },
     buttonText: {
         color: 'white',
         fontSize: 16,
         textAlign: 'center',
         fontWeight: 'bold'
+    },
+    inputLabel: {
+        color: '#334155',
+        fontSize: 16,
+        marginBottom: 5,
+        textAlign: 'left',
+        marginEnd: 'auto'
+    },
+    loginImage: {
+        width: 150,
+        height: 150,
+        marginBottom: 20
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
     },
 });
 

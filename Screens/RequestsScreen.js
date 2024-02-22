@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 import ModalComponent from '../Components/Modals/Modal';
 import ConfirmationModal from '../Components/Modals/ConfirmationModal';
 import { deleteRewardRequest } from '../requestMethods';
+import { successToast } from '../toasts';
+
 
 const RequestsScreen = () => {
     const [rewardRequests, setRewardRequests] = useState([]);
@@ -20,15 +22,14 @@ const RequestsScreen = () => {
     }
     const handleDeleteRequest = (id) => {
         deleteRewardRequest(jwt, id).then(response => response.json()).then(data => {
-
             setRewardRequests(rewardRequests.filter(request => request.id !== id));
+            successToast('Request deleted successfully');
         }).catch(error => {
             console.error('Error:', error);
         });
     }
 
     useEffect(() => {
-        // Kullanıcının taleplerini getir
         getProfile(jwt).then(response => response.json()).then(data => {
 
             const sortedRewardRequests = data.reward_requests.sort((a, b) => {
@@ -47,7 +48,7 @@ const RequestsScreen = () => {
                 setSelectedRewardRequest(item);
                 setModalVisible(true);
             }}>
-                <Image source={{ uri: item.image && item.image }} style={styles.image} />
+                {/* <Image source={{ uri: item.image && item.image }} style={styles.image} /> */}
                 <View style={styles.info}>
                     <Text style={styles.title}>{item.description ? item.description.split(' - ')[0] : "TITLE"}</Text>
                     <Text style={styles.points}>Status: {item.status ? item.status : "Status"}</Text>
@@ -66,6 +67,12 @@ const RequestsScreen = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Your Reward Requests</Text>
+            {rewardRequests.length === 0 && (
+                <>
+                    <Text style={styles.info}>No reward requests</Text>
+                    <Image source={require('../assets/nothing.png')} style={styles.image} />
+                </>
+            )}
             <FlatList
                 data={rewardRequests}
                 renderItem={renderItem}
@@ -109,27 +116,6 @@ const styles = StyleSheet.create({
         flex: 1,
 
     },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalImage: {
-        width: 200,
-        height: 200,
-        marginBottom: 20,
-    },
-    modalTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    modalDescription: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 20,
-    },
     closeButton: {
         backgroundColor: 'blue',
         padding: 10,
@@ -147,6 +133,18 @@ const styles = StyleSheet.create({
         marginVertical: 'auto'
 
     },
+    image: {
+        width: 200,
+        height: 200,
+        borderRadius: 25,
+        marginEnd: 'auto',
+        marginStart: 'auto',
+    },
+    info: {
+        marginEnd: 'auto',
+        marginStart: 'auto',
+    },
+
 });
 
 export default RequestsScreen;

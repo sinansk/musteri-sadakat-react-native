@@ -1,44 +1,31 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Pressable, Text } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Pressable, Text, Image } from 'react-native';
 import globalStyles from '../styles';
 import { useNavigation } from '@react-navigation/native'; // useNavigation hook'unu ekledik
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useDispatch } from 'react-redux';
+import { registerUser } from '../redux/userThunk';
+import { errorToast, successToast } from '../toasts';
+
 export default RegisterScreen = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [number, setNumber] = useState('');
     const navigation = useNavigation();
+    const dispatch = useDispatch();
     const handleRegister = async () => {
         try {
-            // Strapi API ile iletişim kurmak için POST isteği gönder
-            const response = await fetch('http://192.168.1.32:1337/api/auth/local/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username,
-                    email,
-                    password,
-                    number,
-                }),
-            });
-
-            // API'den gelen yanıtı kontrol et
-            const data = await response.json();
-            if (response.ok) {
-                // Başarılı bir şekilde kaydedildiğinde işlem yap
-                // Alert.alert('Success', 'User registered successfully');
-                console.log('Success:', data);
-                navigation.navigate('Home')
-                // İstenirse kayıt işleminden sonra otomatik olarak giriş ekranına yönlendirilebilir
-                // navigation.navigate('Login');
-            } else {
-                // Hata varsa kullanıcıyı uyar
-                Alert.alert('Error', data.message[0].messages[0].message);
+            const response = await dispatch(registerUser({ username, email, password, number }));
+            console.log('Response:', response);
+            if (response.payload && !response.payload.error) {
+                navigation.navigate('Home');
+                successToast('Successfully registered');
+            } else if (response.payload.error) {
+                errorToast('Invalid username or password');
             }
-        } catch (error) {
+        }
+        catch (error) {
             console.error('Error:', error);
         }
     };
@@ -49,6 +36,9 @@ export default RegisterScreen = () => {
                 {/* <Text style={styles.forgotPassword}>Go Back</Text> */}
                 <FontAwesome5 name="arrow-left" size={24} color="black" />
             </Pressable>
+            <Text style={globalStyles.title}>Register</Text>
+            <Image source={require('../assets/login.png')} style={globalStyles.loginImage} />
+            <Text style={globalStyles.inputLabel}>Username</Text>
             <TextInput
                 style={globalStyles.input}
                 placeholder="Username"
@@ -56,6 +46,7 @@ export default RegisterScreen = () => {
                 value={username}
                 onChangeText={setUsername}
             />
+            <Text style={globalStyles.inputLabel}>Email</Text>
             <TextInput
                 style={globalStyles.input}
                 placeholder="Email"
@@ -64,6 +55,7 @@ export default RegisterScreen = () => {
                 value={email}
                 onChangeText={setEmail}
             />
+            <Text style={globalStyles.inputLabel}>Phone number (optional)</Text>
             <TextInput
                 style={globalStyles.input}
                 placeholder="Phone number (optional)"
@@ -71,6 +63,7 @@ export default RegisterScreen = () => {
                 value={number}
                 onChangeText={setNumber}
             />
+            <Text style={globalStyles.inputLabel}>Password</Text>
             <TextInput
                 style={globalStyles.input}
                 placeholder="Password"

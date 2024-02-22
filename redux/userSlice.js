@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginUser, logoutUser, registerUser, fetchLoyaltyPoints } from './userThunk';
+import { loginUser, logoutUser, registerUser, fetchLoyaltyPoints, fetchRewardRequests } from './userThunk';
 const initialState = {
     user: null, // Kullanıcı bilgilerini burada saklayacağız
 };
@@ -46,9 +46,21 @@ const userSlice = createSlice({
             )
             .addCase(fetchLoyaltyPoints.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user.loyaltyPoints = action.payload.data[0].attributes.pointAmount;
+                state.user.loyaltyPoints = action.payload.data.filter(data => data.attributes.user.data.id === state.user.user.id)[0].attributes.pointAmount;
             })
             .addCase(fetchLoyaltyPoints.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.error;
+            })
+            .addCase(fetchRewardRequests.pending, (state, action) => {
+                state.loading = true;
+            }
+            )
+            .addCase(fetchRewardRequests.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user.rewardRequests = action.payload.data;
+            })
+            .addCase(fetchRewardRequests.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.error;
             })

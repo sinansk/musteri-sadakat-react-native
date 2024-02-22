@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, SafeAreaView, Platform, StatusBar } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons'; // Iconları eklemek için kullanılan kütüphane
@@ -14,16 +14,17 @@ import LogoutScreen from './Screens/LogoutScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import RegisterScreen from './Screens/RegisterScreen';
 import ForgotPasswordScreen from './Screens/ForgotPasswordScreen';
+import Toast from 'react-native-toast-message';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
 
 function StackNav() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false
+        headerShown: false,
+        headerTransparent: true,
       }}>
       <Stack.Screen name="Tab" component={TabNav} />
       <Stack.Screen name="Register" component={RegisterScreen} />
@@ -31,6 +32,7 @@ function StackNav() {
     </Stack.Navigator>
   );
 }
+
 function TabNav() {
   const user = useSelector(state => state.userSlice.user);
   const isLoggedIn = !!user;
@@ -46,6 +48,7 @@ function TabNav() {
           },
           null,
         ],
+        headerShown: false,
         headerTitle: ''
       }}
     >
@@ -58,6 +61,7 @@ function TabNav() {
             <FontAwesome5 name="home" size={size} color={color} />
           ),
         }}
+
       />
       <Tab.Screen
         name="Requests"
@@ -92,14 +96,15 @@ function TabNav() {
     </Tab.Navigator>
   );
 }
+
 function App() {
-
-
-
   return (
-    <NavigationContainer>
-      <StackNav />
-    </NavigationContainer>
+    <SafeAreaView style={styles.container}>
+      <NavigationContainer>
+        <StackNav />
+      </NavigationContainer>
+      <Toast />
+    </SafeAreaView>
   );
 }
 
@@ -112,14 +117,9 @@ export default () => {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#white',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  icon: {
-    padding: 10,
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: Platform.OS === 'android' | Platform.OS === 'ios' ? StatusBar.currentHeight : 0,
   },
 });

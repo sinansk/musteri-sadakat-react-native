@@ -1,16 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { login, logout, register, getLoyaltyPoints } from '../requestMethods';
+import { login, logout, register, getLoyaltyPoints, getRewardRequests } from '../requestMethods';
 
 export const loginUser = createAsyncThunk(
     'user/loginUser',
     async (data, { rejectWithValue }) => {
         try {
             const response = await login(data);
-            console.log("ResponseReduxLogin", response)
             if (response.status === 200) {
                 const userData = await response.json();
-                console.log("UserDataReduxLogin", userData)
-
                 return userData;
             } else {
                 return rejectWithValue(await response.json());
@@ -41,12 +38,7 @@ export const registerUser = createAsyncThunk(
 export const fetchLoyaltyPoints = createAsyncThunk(
     'user/fetchLoyaltyPoints',
     async (token, { rejectWithValue, getState }) => {
-
         try {
-            // const state = getState();
-            // const token = state.user?.jwt;
-
-            console.log('Token:', token);
             if (!token) {
                 throw new Error('Token not found'); // Token yoksa hata fırlatın
             }
@@ -54,6 +46,23 @@ export const fetchLoyaltyPoints = createAsyncThunk(
             if (response.status === 200) {
                 const loyaltyPoints = await response.json();
                 return loyaltyPoints;
+            } else {
+                return rejectWithValue(await response.json());
+            }
+        } catch (err) {
+            return rejectWithValue(err.message);
+        }
+    }
+);
+
+export const fetchRewardRequests = createAsyncThunk(
+    'user/fetchRewardRequests',
+    async (token, { rejectWithValue }) => {
+        try {
+            const response = await getRewardRequests(token);
+            if (response.status === 200) {
+                const rewardRequests = await response.json();
+                return rewardRequests;
             } else {
                 return rejectWithValue(await response.json());
             }

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Pressable } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Pressable, Image } from 'react-native'
 import React, { useRef } from 'react'
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -21,6 +21,7 @@ const LogoutScreen = () => {
 
     return (
         <View style={styles.container}>
+            <Image source={require('../assets/door.png')} style={styles.doorImage} />
             <Text style={styles.title}>Are you sure you want to log out ?</Text>
             <View style={styles.buttons}>
                 <Pressable onPress={handleLogout} style={styles.confirmButton}>
@@ -84,4 +85,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
     },
+    doorImage: {
+        width: 200,
+        height: 200,
+        marginBottom: 20
+    }
 })

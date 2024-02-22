@@ -3,11 +3,11 @@ import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from '
 import { forgotPassword } from '../requestMethods';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import globalStyles from '../styles';
 const ForgotPasswordScreen = () => {
     const [email, setEmail] = useState('');
     const navigation = useNavigation();
     const handleForgotPassword = () => {
-        console.log('Şifrenizi sıfırlama talebi gönderildi:', email);
         forgotPassword(email)
             .then(response => response.json())
             .then(data => {
@@ -32,8 +32,8 @@ const ForgotPasswordScreen = () => {
                 keyboardType="email-address"
                 autoCapitalize="none"
             />
-            <TouchableOpacity style={styles.button} onPress={handleForgotPassword}>
-                <Text style={styles.buttonText}>Onay Ver</Text>
+            <TouchableOpacity style={globalStyles.button} onPress={handleForgotPassword}>
+                <Text style={globalStyles.buttonText}>Onay Ver</Text>
             </TouchableOpacity>
         </View>
     );

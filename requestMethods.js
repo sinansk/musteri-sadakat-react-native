@@ -1,7 +1,7 @@
 import { getCurrentDateTimeInISOString } from "./utils/getCurrentDateTimeIso";
 
-
-export const api = "http://192.168.1.32:1337/api/";
+export const api = "https://willing-ants-185ca583cb.strapiapp.com/api/";
+// export const api = "http://192.168.1.32:1337/api/";
 
 export const authApi = `${api}auth`;
 
@@ -50,7 +50,6 @@ export const register = async (data) => {
 };
 
 export const forgotPassword = async (email) => {
-    console.log('Email:', email);
     const response = await fetch(`${authApi}/forgot-password`, {
         method: 'POST',
         headers: {
@@ -64,6 +63,44 @@ export const forgotPassword = async (email) => {
     });
     return response;
 };
+
+export const getProfile = async (token) => {
+    const response = await fetch(meApi, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+    return response;
+}
+
+export const updateProfile = async (token, data, userId) => {
+    const response = await fetch(`${userApi}/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+    });
+    return response;
+}
+export const changePassword = async (jwt, currentPassword, updatedPassword, confirmPassword) => {
+    const response = await fetch(`${authApi}/change-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({
+            "currentPassword": currentPassword,
+            "password": updatedPassword,
+            "passwordConfirmation": confirmPassword,
+        }),
+    });
+    return response;
+}
 
 export const getLoyaltyPoints = async (token) => {
     const response = await fetch(loyaltyPointsApi + `/?populate=*`, {
@@ -92,12 +129,7 @@ export const makeRewardRequest = async (token, rewardId) => {
     return response;
 }
 export const createRewardRequest = async (userId, jwt, requestedRewardId, modalInput) => {
-    console.log('User ID:', userId);
-    console.log('JWT:', jwt);
-    console.log('requestedRewardId:', requestedRewardId);
-    console.log('modalInput:', modalInput);
     const dateTime = getCurrentDateTimeInISOString();
-    console.log('dateTime:', dateTime);
     try {
         const response = await fetch(rewardRequestsApi, {
             method: 'POST',
@@ -145,43 +177,5 @@ export const deleteRewardRequest = async (token, rewardRequestId) => {
     return response;
 }
 
-export const getProfile = async (token) => {
-    const response = await fetch(meApi, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-    });
-    return response;
-}
 
-export const updateProfile = async (token, data, userId) => {
-    console.log('Token:', token);
-    console.log('User ID:', userId);
-    console.log('Data:', data);
-    const response = await fetch(`${userApi}/${userId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-    });
-    return response;
-}
-export const changePassword = async (token, data, userId) => {
-    console.log('Token:', token);
-    console.log('User ID:', userId);
-    console.log('Data:', data);
-    const response = await fetch(`${authApi}/change-password`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-    });
-    return response;
-}
 

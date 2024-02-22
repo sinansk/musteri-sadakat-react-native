@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "musteri-sadakat-react-native",
+    "name": "sadakat-programi",
     "slug": "musteri-sadakat-react-native",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,16 +15,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sinansk.musterisadakatreactnative"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sinansk.musterisadakatreactnative",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a844dadf-b1c2-4e31-a861-59390678bb20"
+      }
     }
   }
 }
