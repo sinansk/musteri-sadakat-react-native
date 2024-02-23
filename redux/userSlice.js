@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import { loginUser, logoutUser, registerUser, fetchLoyaltyPoints, fetchRewardRequests } from './userThunk';
 const initialState = {
     user: null,
-    rewardRequests: [],
     loading: false,
     error: null
 };
@@ -52,7 +51,12 @@ const userSlice = createSlice({
             )
             .addCase(fetchLoyaltyPoints.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user.loyaltyPoints = action.payload.data.filter(d => d.attributes.users.data[0].id === state.user.user.id)[0].attributes.pointAmount;
+                const loyaltyPoints = action.payload.data.find(d => {
+                    const usersData = d.attributes.users?.data;
+                    return usersData.some(user => user?.id === state.user.user.id);
+                });
+
+                state.user.loyaltyPoints = loyaltyPoints?.attributes.pointAmount || 0;
             })
             .addCase(fetchLoyaltyPoints.rejected, (state, action) => {
                 state.loading = false;
