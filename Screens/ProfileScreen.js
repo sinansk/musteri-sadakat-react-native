@@ -66,25 +66,25 @@ const ProfileScreen = () => {
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.profileInfo}>
                 <Image source={require('../assets/settings.png')} style={styles.profileImage} />
-                <Text>User Name</Text>
+                <Text style={globalStyles.inputLabel}>User Name</Text>
                 <TextInput
                     style={styles.input}
-                    defaultValue={userData.email}
+                    defaultValue={userData.username}
                     value={updatedData.username}
                     onChangeText={text => setUpdatedData({ ...updatedData, username: text })}
                 />
 
-                <Text>E Mail</Text>
+                <Text style={globalStyles.inputLabel}>E Mail</Text>
                 <TextInput
                     style={globalStyles.input}
                     defaultValue={userData.email}
                     value={updatedData.email}
                     onChangeText={text => setUpdatedData({ ...updatedData, email: text })}
                 />
-                <Text>Address</Text>
+                <Text style={globalStyles.inputLabel}>Address</Text>
                 <TextInput
                     style={globalStyles.input}
-                    defaultValue={userData.email}
+                    defaultValue={userData.address}
                     value={updatedData.address}
                     onChangeText={text => setUpdatedData({ ...updatedData, address: text })}
                 />
@@ -93,18 +93,18 @@ const ProfileScreen = () => {
                 <Text style={globalStyles.inputLabel}>Phone</Text>
                 <TextInput
                     style={globalStyles.input}
-                    defaultValue={userData.email}
+                    defaultValue={userData.phone}
                     value={updatedData.phone}
                     onChangeText={text => setUpdatedData({ ...updatedData, phone: text })}
                 />
-                <Text>New Password</Text>
+                <Text style={globalStyles.inputLabel}>New Password</Text>
                 <TextInput
                     style={globalStyles.input}
                     value={updatedPassword.password}
                     onChangeText={text => setUpdatedPassword({ ...updatedPassword, password: text })}
                     secureTextEntry
                 />
-                <Text>Confirm Password</Text>
+                <Text style={globalStyles.inputLabel}>Confirm Password</Text>
                 <TextInput
                     style={globalStyles.input}
                     value={updatedPassword.confirmPassword}
